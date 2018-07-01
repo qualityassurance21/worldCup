@@ -23,9 +23,9 @@ conn, cur = connectDB.connect_db(get_conf["worldCup"]["host"], get_conf["worldCu
                      get_conf["worldCup"]["password"], get_conf["worldCup"]["database"], get_conf["worldCup"]["port"])
 
 
-url = 'http://api.sports.163.com/api/football/v1/2018/1002/16/groupInfo/groupby?groupType=groupName'
-urlPlayer = 'http://api.sports.163.com/api/football/v1/2018/1002/16/playerTech/getList'
-urlTeam = 'http://api.sports.163.com/api/football/v1/2018/1002/16/teamTech/getList'
+# url = 'http://api.sports.163.com/api/football/v1/2018/1002/16/groupInfo/groupby?groupType=groupName'  # 赛程表
+# url = 'http://api.sports.163.com/api/football/v1/2018/1002/16/playerTech/getList'  # 球员信息表
+url = 'http://api.sports.163.com/api/football/v1/2018/1002/16/teamTech/getList'  # 国家的数据表
 # soup = getSoup.getSoup(url)
 # soup = str(soup)
 # a ='123-2638-3627 home homepages # $这是注释'
@@ -34,7 +34,7 @@ urlTeam = 'http://api.sports.163.com/api/football/v1/2018/1002/16/teamTech/getLi
 # re = re.compile(r'"linkPreview":"(.+?)",')
 # home = re.findall(soup)
 # print(type(soup))
-response = requests.get(urlTeam)
+response = requests.get(url)
 response.raise_for_status()
 res = response.text
 # print(type(res))
@@ -129,7 +129,7 @@ jsonRes = jsonRes['data']
 #     iiii +=1
 
 
-# 国家队之间的数据
+# # 国家队之间的数据
 iiii = 0
 for teamTec in jsonRes:
     teamTecJson = jsonRes[teamTec]
@@ -164,6 +164,7 @@ for teamTec in jsonRes:
         attPenGoal =playerJson['attPenGoal']
         wonCorners = playerJson['wonCorners']
         if iiii == 0:
+            # 可以自动生成
             sqlPlayer = 'insert into teamtechavg(team,games,possession,goals,goalsConceded,goalAssist,totalScoringAtt,ontargetScoringAtt,totalOffside,yellowCard,redCard,totalPass,totalTackle,fouls,wasFouled,outfielderBlock,totalCross,interception,saves,penaltySave,attPenGoal,wonCorners) ' \
                                                       'values("'+str(team)+'","'+str(games)+'","'+str(possession)+'","'+str(goals)+'","'+str(goalsConceded)+'","'+str(goalAssist)+'","'+str(totalScoringAtt)+'","'+str(ontargetScoringAtt)+'","'+str(totalOffside)+'","'+str(yellowCard)+'","'+str(redCard)+'","'+str(totalPass)+'","'+str(totalTackle)+'","'+str(fouls)+'","'+str(wasFouled)+'","'+str(outfielderBlock)+'","'+str(totalCross)+'","'+str(interception)+'","'+str(saves)+'","'+str(penaltySave)+'","'+str(attPenGoal)+'","'+str(wonCorners)+'")'
             print(sqlPlayer)
